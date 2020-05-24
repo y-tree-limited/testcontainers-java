@@ -1,6 +1,6 @@
 pipeline {
   agent {
-    label "jenkins-gradle-xl"
+    label "jenkins-gradle5-xl"
   }
   environment {
     ORG = 'y-tree-limited'
