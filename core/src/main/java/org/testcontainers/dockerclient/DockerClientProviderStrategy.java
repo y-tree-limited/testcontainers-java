@@ -173,8 +173,8 @@ public abstract class DockerClientProviderStrategy {
 
     protected DockerClient getClientForConfig(DockerClientConfig config) {
         return DockerClientImpl
-            .getInstance(new AuthDelegatingDockerClientConfig(config))
-            .withDockerCmdExecFactory(new OkHttpDockerCmdExecFactory());
+                .getInstance(new AuthDelegatingDockerClientConfig(config))
+                .withDockerCmdExecFactory(new OkHttpDockerCmdExecFactory());
     }
 
     protected void ping(DockerClient client, int timeoutInSeconds) {
@@ -209,18 +209,24 @@ public abstract class DockerClientProviderStrategy {
             case "unix":
             case "npipe":
                 if (DockerClientConfigUtils.IN_A_CONTAINER) {
-                    return client.inspectNetworkCmd()
-                        .withNetworkId("bridge")
-                        .exec()
-                        .getIpam()
-                        .getConfig()
-                        .stream()
-                        .filter(it -> it.getGateway() != null)
-                        .findAny()
-                        .map(Network.Ipam.Config::getGateway)
-                        .orElseGet(() -> {
-                            return DockerClientConfigUtils.getDefaultGateway().orElse("localhost");
-                        });
+                    try {
+                        return client.inspectNetworkCmd()
+                                .withNetworkId("bridge")
+                                .exec()
+                                .getIpam()
+                                .getConfig()
+                                .stream()
+                                .filter(it -> it.getGateway() != null)
+                                .findAny()
+                                .map(Network.Ipam.Config::getGateway)
+                                .orElseGet(() -> {
+                                    return DockerClientConfigUtils.getDefaultGateway().orElse("localhost");
+                                });
+                    } catch (Exception e) {
+                        LOGGER.warn("There is no bridge docker network", e);
+                        //there is no "bridge" network
+                        return DockerClientConfigUtils.getDefaultGateway().orElse("localhost");
+                    }
                 }
                 return "localhost";
             default:

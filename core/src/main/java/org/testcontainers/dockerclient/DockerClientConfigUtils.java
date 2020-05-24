@@ -1,7 +1,12 @@
 package org.testcontainers.dockerclient;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.dockerjava.core.DockerClientConfig;
+import io.fabric8.kubernetes.api.model.Pod;
+import io.fabric8.kubernetes.client.DefaultKubernetesClient;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.testcontainers.DockerClientFactory;
@@ -24,15 +29,17 @@ public class DockerClientConfigUtils {
 
     @Getter(lazy = true)
     private static final Optional<String> defaultGateway = Optional
-            .ofNullable(DockerClientFactory.instance().runInsideDocker(
+            .ofNullable(
+                    (isRunningInK8s()) ? getK8sHost() :
+                    DockerClientFactory.instance().runInsideDocker(
                     cmd -> cmd.withCmd("sh", "-c", "ip route|awk '/default/ { print $3 }'"),
                     (client, id) -> {
                         try {
                             LogToStringContainerCallback loggingCallback = new LogToStringContainerCallback();
                             client.logContainerCmd(id).withStdOut(true)
-                                                      .withFollowStream(true)
-                                                      .exec(loggingCallback)
-                                                      .awaitStarted();
+                                    .withFollowStream(true)
+                                    .exec(loggingCallback)
+                                    .awaitStarted();
                             loggingCallback.awaitCompletion(3, SECONDS);
                             return loggingCallback.toString();
                         } catch (Exception e) {
@@ -43,6 +50,18 @@ public class DockerClientConfigUtils {
             ))
             .map(StringUtils::trimToEmpty)
             .filter(StringUtils::isNotBlank);
+
+    @SneakyThrows
+    private static String getK8sHost() {
+        String podName = System.getenv("HOSTNAME");
+        KubernetesClient client = new DefaultKubernetesClient();
+        Pod k8sPod = client.pods().withName(podName).get();
+        return k8sPod.getStatus().getHostIP();
+    }
+
+    private static boolean isRunningInK8s() {
+        return System.getenv().containsKey("KUBERNETES_SERVICE_HOST");
+    }
 
     /**
      * Use {@link DockerClientFactory#dockerHostIpAddress()}

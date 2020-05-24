@@ -14,7 +14,7 @@ subprojects {
     apply plugin: 'io.franzbecker.gradle-lombok'
     apply plugin: 'com.github.johnrengelman.shadow'
 
-    group = "org.testcontainers"
+    group = "com.ytree.testcontainers"
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8

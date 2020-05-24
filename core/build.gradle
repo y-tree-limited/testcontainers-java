@@ -87,6 +87,7 @@ task japicmp(type: me.champeau.gradle.japicmp.JapicmpTask) {
     packageExcludes = [
         "com.github.dockerjava.*",
         "org.testcontainers.shaded.*",
+        "io.fabric8.kubernetes.*",
     ]
 
     methodExcludes = [
@@ -112,26 +113,27 @@ dependencies {
     compile 'org.slf4j:slf4j-api:1.7.30'
     compile 'org.jetbrains:annotations:19.0.0'
     compile 'org.apache.commons:commons-compress:1.20'
-    compile ('org.rnorth.duct-tape:duct-tape:1.0.8') {
+    compile 'io.fabric8:kubernetes-client:4.10.1'
+    compile('org.rnorth.duct-tape:duct-tape:1.0.8') {
         exclude(group: 'org.jetbrains', module: 'annotations')
     }
 
-    compile ('org.rnorth.visible-assertions:visible-assertions:2.1.2') {
+    compile('org.rnorth.visible-assertions:visible-assertions:2.1.2') {
         // Excluded in favor of jna-platform below
         exclude(group: "net.java.dev.jna", module: "jna")
     }
 
-    compile ('org.rnorth:tcp-unix-socket-proxy:1.0.2') {
+    compile('org.rnorth:tcp-unix-socket-proxy:1.0.2') {
         exclude(group: "log4j", module: "log4j")
     }
 
     compile "net.java.dev.jna:jna-platform:5.5.0"
 
-    shaded ('org.scala-sbt.ipcsocket:ipcsocket:1.0.1') {
+    shaded('org.scala-sbt.ipcsocket:ipcsocket:1.0.1') {
         exclude(group: "net.java.dev.jna")
     }
 
-    shaded ('com.github.docker-java:docker-java-transport-okhttp:3.2.1') {
+    shaded('com.github.docker-java:docker-java-transport-okhttp:3.2.1') {
         exclude(group: 'net.java.dev.jna')
         exclude(group: 'com.google.code.findbug')
         exclude(group: 'org.slf4j')
@@ -153,7 +155,7 @@ dependencies {
     testCompile 'com.rabbitmq:amqp-client:5.9.0'
     testCompile 'org.mongodb:mongo-java-driver:3.12.4'
 
-    testCompile ('org.mockito:mockito-core:3.3.3') {
+    testCompile('org.mockito:mockito-core:3.3.3') {
         exclude(module: 'hamcrest-core')
     }
     // Synthetic JAR used for MountableFileTest and DirectoryTarResourceTest

@@ -162,15 +162,8 @@ public class DockerClientFactory {
 
         final String ryukContainerId;
 
-        boolean useRyuk = !Boolean.parseBoolean(System.getenv("TESTCONTAINERS_RYUK_DISABLED"));
-        if (useRyuk) {
-            log.debug("Ryuk is enabled");
-            ryukContainerId = ResourceReaper.start(hostIpAddress, client);
-            log.info("Ryuk started - will monitor and terminate Testcontainers containers on JVM exit");
-        } else {
-            log.debug("Ryuk is disabled");
-            ryukContainerId = null;
-        }
+        log.debug("Ryuk is disabled");
+        ryukContainerId = null;
 
         boolean checksEnabled = !TestcontainersConfiguration.getInstance().isDisableChecks();
         if (checksEnabled) {
