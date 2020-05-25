@@ -86,8 +86,7 @@ task japicmp(type: me.champeau.gradle.japicmp.JapicmpTask) {
 
     packageExcludes = [
         "com.github.dockerjava.*",
-        "org.testcontainers.shaded.*",
-        "io.fabric8.kubernetes.*",
+        "org.testcontainers.shaded.*"
     ]
 
     methodExcludes = [
@@ -113,7 +112,7 @@ dependencies {
     compile 'org.slf4j:slf4j-api:1.7.30'
     compile 'org.jetbrains:annotations:19.0.0'
     compile 'org.apache.commons:commons-compress:1.20'
-    compile 'io.fabric8:kubernetes-client:4.10.1'
+
     compile('org.rnorth.duct-tape:duct-tape:1.0.8') {
         exclude(group: 'org.jetbrains', module: 'annotations')
     }
@@ -139,7 +138,9 @@ dependencies {
         exclude(group: 'org.slf4j')
         exclude(group: 'org.apache.commons', module: 'commons-compress')
     }
-
+    shaded ('io.fabric8:kubernetes-client:4.10.1') {
+        exclude(group: "org.slf4j")
+    }
     shaded "org.yaml:snakeyaml:1.25"
 
     shaded 'com.squareup.okhttp3:okhttp:3.14.8'
