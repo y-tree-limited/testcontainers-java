@@ -19,7 +19,7 @@ pipeline {
           sh "export GRADLE_USER_HOME=/opt/gradle"
           sh "cp /root/gradle_user_home/gradle.properties /opt/gradle/"
           sh "cp /root/gradle_user_home/init.gradle /opt/gradle/init.d/"
-          sh "./gradlew -Pversion=\$(cat VERSION) clean build publish -x test --info"
+          sh "./gradlew -Pversion=\$(cat VERSION) clean build publish -x test -x japicmp -x jarFileTest --info"
         }
       }
     }
@@ -42,7 +42,7 @@ pipeline {
           sh "cp /root/gradle_user_home/gradle.properties /opt/gradle/"
           sh "cp /root/gradle_user_home/init.gradle /opt/gradle/init.d/"
 
-          sh "./gradlew -Pversion=\$(cat VERSION) clean build publish -x test --info"
+          sh "./gradlew -Pversion=\$(cat VERSION) clean build publish -x test -x japicmp -x jarFileTest --info"
         }
       }
     }
