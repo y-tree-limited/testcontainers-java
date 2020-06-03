@@ -3,8 +3,7 @@ pipeline {
     label "jenkins-gradle5-xl"
   }
   environment {
-    APP_NAME = 'lib-ms-core'
-    TESTCONTAINERS_RYUK_DISABLED = "true"
+    APP_NAME = 'testcontainers-java'
   }
   stages {
     stage('Build PR Snapshot') {
@@ -19,7 +18,7 @@ pipeline {
           //sh "export GRADLE_USER_HOME=/opt/gradle"
           //sh "cp /root/gradle_user_home/gradle.properties /opt/gradle/"
           sh "cp /root/gradle_user_home/init.gradle init.gradle"
-          sh "./gradlew -Pversion=\$(cat VERSION) clean build publish -x test -x japicmp -x jarFileTest --info"
+          sh "./gradlew --init-script init.gradle -Pversion=\$(cat VERSION) clean build publish -x test -x japicmp -x jarFileTest --info"
         }
       }
     }
@@ -41,8 +40,7 @@ pipeline {
           //sh "export GRADLE_USER_HOME=/opt/gradle"
           //sh "cp /root/gradle_user_home/gradle.properties /opt/gradle/"
           sh "cp /root/gradle_user_home/init.gradle init.gradle"
-
-          sh "./gradlew -Pversion=\$(cat VERSION) clean build publish -x test -x japicmp -x jarFileTest --info"
+          sh "./gradlew --init-script init.gradle -Pversion=\$(cat VERSION) clean build publish -x test -x japicmp -x jarFileTest --info"
         }
       }
     }
