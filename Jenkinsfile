@@ -16,9 +16,9 @@ pipeline {
           sh "git config --global credential.helper store"
           sh "jx step git credentials"
           sh "echo \$(jx-release-version)-SNAPSHOT > VERSION"
-          sh "export GRADLE_USER_HOME=/opt/gradle"
-          sh "cp /root/gradle_user_home/gradle.properties /opt/gradle/"
-          sh "cp /root/gradle_user_home/init.gradle /opt/gradle/init.d/"
+          //sh "export GRADLE_USER_HOME=/opt/gradle"
+          //sh "cp /root/gradle_user_home/gradle.properties /opt/gradle/"
+          sh "cp /root/gradle_user_home/init.gradle init.gradle"
           sh "./gradlew -Pversion=\$(cat VERSION) clean build publish -x test -x japicmp -x jarFileTest --info"
         }
       }
@@ -38,9 +38,9 @@ pipeline {
           // so we can retrieve the version in later steps
           sh "echo \$(jx-release-version) > VERSION"
           sh "jx step tag --version \$(cat VERSION)"
-          sh "export GRADLE_USER_HOME=/opt/gradle"
-          sh "cp /root/gradle_user_home/gradle.properties /opt/gradle/"
-          sh "cp /root/gradle_user_home/init.gradle /opt/gradle/init.d/"
+          //sh "export GRADLE_USER_HOME=/opt/gradle"
+          //sh "cp /root/gradle_user_home/gradle.properties /opt/gradle/"
+          sh "cp /root/gradle_user_home/init.gradle init.gradle"
 
           sh "./gradlew -Pversion=\$(cat VERSION) clean build publish -x test -x japicmp -x jarFileTest --info"
         }
